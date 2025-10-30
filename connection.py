@@ -130,4 +130,4 @@ class Connection():
     def shut_down(self):
         self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
-        print("\nClosed {}".format(self.label))
+        print("\nClosed {}".format(self.type))
