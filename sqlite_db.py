@@ -13,22 +13,28 @@ def get_connection(db_path: Path | str) -> sqlite3.Connection:
     return conn
 
 
-def init_db(db_path:Path|str, name:str="data", columns:dict[str,str]=None) -> None:
+def init_db(db_path:Path|str, name:str="data", primary:dict[str,str]=None, columns:dict[str,str]=None) -> None:
     """
     Initialize the SQLite database and create a table if it doesn't exist.
     Dynamically adds any new columns that don't yet exist in the table.
 
     Args:
         db_path: Path to the SQLite database file.
-        name: Table name.
-        columns: Dict of column_name -> SQL type, e.g. {"url": "TEXT", "count": "INTEGER"}.
-                 The 'id' primary key is always created automatically.
+        :param name: Table name.
+        :param primary: Primary table column (Must be length 1)
+        :param columns: Dict of column_name -> SQL type, e.g. {"url": "TEXT", "count": "INTEGER"}.
     """
+
+    if primary is None:
+        primary = {"id": "INTEGER"}
+
     conn = get_connection(db_path)
     cur = conn.cursor()
 
+    (primary_col, primary_type) = primary
+
     # Create table with just the primary key if it doesn't exist
-    cur.execute(f"CREATE TABLE IF NOT EXISTS {name} (id INTEGER PRIMARY KEY)")
+    cur.execute(f"CREATE TABLE IF NOT EXISTS {name} ({primary_col} {primary_type} PRIMARY KEY)")
 
     # Add any new columns that don't already exist
     if columns:
