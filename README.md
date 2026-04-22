@@ -11,4 +11,7 @@ A TCP connection class that allows the creation of Python servers or clients. It
 ## scraper
 A module that creates different web bots to scrape data online. It uses an abstract class to build the foundation to create bots specifically for different websites. Currently supports:
 - GitHub
-- Google Images
+- Google Images (WIP)
+
+## sqlite_db
+A module that allows basic functionality for an SQLite database. It converts common SQLite functionality into simple one-line commands for use in general projects.

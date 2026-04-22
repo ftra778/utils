@@ -31,7 +31,7 @@ def init_db(db_path:Path|str, name:str="data", primary:dict[str,str]=None, colum
     conn = get_connection(db_path)
     cur = conn.cursor()
 
-    (primary_col, primary_type) = primary
+    ((primary_col,), (primary_type,)) = (primary, primary.values())
 
     # Create table with just the primary key if it doesn't exist
     cur.execute(f"CREATE TABLE IF NOT EXISTS {name} ({primary_col} {primary_type} PRIMARY KEY)")
@@ -49,7 +49,7 @@ def init_db(db_path:Path|str, name:str="data", primary:dict[str,str]=None, colum
     conn.close()
 
 
-def insert_row(db_path:Path|str, name:str="data", data:dict=None) -> int|None:
+def insert_row(db_path:Path|str, name:str="data", data:dict=None, on_conflict:str="IGNORE") -> int|None:
     """
     Insert a single row into the table.
 
@@ -71,7 +71,7 @@ def insert_row(db_path:Path|str, name:str="data", data:dict=None) -> int|None:
     placeholders = ", ".join("?" * len(data))
 
     cur.execute(
-        f"INSERT INTO {name} ({columns}) VALUES ({placeholders})",
+        f"INSERT OR {on_conflict} INTO {name} ({columns}) VALUES ({placeholders})",
         tuple(data.values())
     )
 
@@ -81,7 +81,7 @@ def insert_row(db_path:Path|str, name:str="data", data:dict=None) -> int|None:
     return row_id
 
 
-def insert_rows(db_path:Path|str, name:str="data", rows:list[dict]=None) -> int:
+def insert_rows(db_path:Path|str, name:str="data", rows:list[dict]=None, on_conflict:str="IGNORE") -> int:
     """
     Insert multiple rows into the table efficiently.
 
@@ -103,7 +103,7 @@ def insert_rows(db_path:Path|str, name:str="data", rows:list[dict]=None) -> int:
     placeholders = ", ".join("?" * len(rows[0]))
 
     cur.executemany(
-        f"INSERT INTO {name} ({columns}) VALUES ({placeholders})",
+        f"INSERT OR {on_conflict} INTO {name} ({columns}) VALUES ({placeholders})",
         [tuple(row.values()) for row in rows]
     )
 
