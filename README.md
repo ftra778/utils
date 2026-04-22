@@ -7,3 +7,8 @@ A class that converts hexadecimal strings into macros for printing to console.
 
 ## connection
 A TCP connection class that allows the creation of Python servers or clients. It is designed to handle large collection of bytes and implements functionality that ensures all data has been sent/received using a handshake protocol.
+
+## scraper
+A module that creates different web bots to scrape data online. It uses an abstract class to build the foundation to create bots specifically for different websites. Currently supports:
+- GitHub
+- Google Images
